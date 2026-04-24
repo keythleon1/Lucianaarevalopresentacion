@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación - Propuestas</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .propuesta-scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Header with counter */
+        .propuesta-header {
+            position: absolute;
+            top: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+
+        .propuesta-header h1 {
+            font-family: 'Times New Roman', serif;
+            font-size: 6vh;
+            font-weight: bold;
+            color: #1a3a5f;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .propuesta-counter {
+            font-family: 'Times New Roman', serif;
+            font-size: 2.5vh;
+            color: #D4AF37;
+            margin-top: 1vh;
+            letter-spacing: 2px;
+        }
+
+        /* Card layout */
+        .propuesta-card {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 85%;
+            max-width: 900px;
+            text-align: center;
+            gap: 3vh;
+        }
+
+        .propuesta-card.active {
+            display: flex;
+        }
+
+        /* Entrance animation */
+        .propuesta-card.animate-in {
+            animation: propuestaEnter 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes propuestaEnter {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Image frame */
+        .propuesta-img-frame {
+            width: 100%;
+            max-height: 45vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .propuesta-img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Text content */
+        .propuesta-title {
+            font-family: 'Times New Roman', serif;
+            font-size: 4.5vh;
+            font-weight: bold;
+            color: #1a3a5f;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        .propuesta-number {
+            color: #D4AF37;
+        }
+
+        .propuesta-desc {
+            font-family: 'Times New Roman', serif;
+            font-size: 2.5vh;
+            color: #555;
+            line-height: 1.6;
+            max-width: 90%;
+            margin: 0 auto;
+        }
+
+        /* Progress dots */
+        .progress-dots {
+            position: absolute;
+            bottom: 6vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.2vh;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 1.2vh;
+            height: 1.2vh;
+            border-radius: 50%;
+            background: #ccc;
+            transition: all 0.4s ease;
+        }
+
+        .dot.active {
+            background: #D4AF37;
+            transform: scale(1.3);
+        }
+
+        /* Navigation arrows */
+        .prop-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5vh;
+            color: #D4AF37;
+            cursor: pointer;
+            z-index: 15;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            user-select: none;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .prop-nav:hover {
+            opacity: 1;
+        }
+
+        .prop-nav-left {
+            left: 3vw;
+        }
+
+        .prop-nav-right {
+            right: 3vw;
+        }
+
+        .prop-nav.disabled {
+            opacity: 0.15;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="animated-bg">
+<div class="slide" style="padding:0; max-width:100vw;">
+    <div class="propuesta-scene">
+
+        <!-- Header -->
+        <div class="propuesta-header">
+            <h1>PROPUESTAS</h1>
+            <div class="propuesta-counter" id="counter">1 / 7</div>
+        </div>
+
+        <!-- Internal Nav Arrows -->
+        <div class="prop-nav prop-nav-left disabled" id="prevProp">&#8592;</div>
+        <div class="prop-nav prop-nav-right" id="nextProp">&#8594;</div>
+
+        <!-- Proposal 1 -->
+        <div class="propuesta-card active animate-in" data-index="0">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_galerias.png" alt="Galerías Fotográficas">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">1.</span> Galerías Fotográficas</h2>
+            <p class="propuesta-desc">Un mural en el laboratorio de histología donde el estudiante pueda ver fotografías de los tejidos, etapas embrionarias y malformaciones genéticas con sus explicaciones detalladas.</p>
+        </div>
+
+        <!-- Proposal 2 -->
+        <div class="propuesta-card" data-index="1">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_atlas.png" alt="Atlas Virtuales y Físicos">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">2.</span> Atlas Virtuales y Físicos</h2>
+            <p class="propuesta-desc">Estudiantes elaborando en papel sus propios atlas de histología, combinando el aprendizaje manual con recursos digitales interactivos.</p>
+        </div>
+
+        <!-- Proposal 3 (Moved) -->
+        <div class="propuesta-card" data-index="2">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_redes.png" alt="Redes Sociales">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">3.</span> Rincón de Histología en Redes Sociales</h2>
+            <p class="propuesta-desc">Una cuenta institucional manejada con los estudiantes donde se publican imágenes histológicas del día, datos curiosos y preguntas de trivia. Hace visible la asignatura más allá del aula.</p>
+        </div>
+
+        <!-- Proposal 4 -->
+        <div class="propuesta-card" data-index="3">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_laboratorios.png" alt="Prácticas en Laboratorio">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">4.</span> Prácticas Continuas en los Laboratorios</h2>
+            <p class="propuesta-desc">Sesiones regulares donde los estudiantes observan y diferencian organismos unicelulares y pluricelulares, identifican las partes de la célula y realizan actividades con muestras reales.</p>
+        </div>
+
+        <!-- Proposal 5 -->
+        <div class="propuesta-card" data-index="4">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_olimpiadas.png" alt="Olimpiadas Académicas">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">5.</span> Olimpiadas Académicas de Histología</h2>
+            <p class="propuesta-desc">Competencia entre estudiantes con rondas de preguntas, identificación de imágenes al microscopio y casos clínicos, fomentando el estudio con motivación y sana competencia.</p>
+        </div>
+
+        <!-- Proposal 6 -->
+        <div class="propuesta-card" data-index="5">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_casos.png" alt="Casos Clínicos">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">6.</span> Casos Clínicos por Equipos</h2>
+            <p class="propuesta-desc">Grupos de estudiantes reciben un caso clínico real con imágenes histológicas y deben diagnosticar, discutir y presentar sus conclusiones como si fueran un equipo médico.</p>
+        </div>
+
+        <!-- Proposal 7 -->
+        <div class="propuesta-card" data-index="6">
+            <div class="propuesta-img-frame">
+                <img src="images/propuesta_semana.png" alt="Semana Histológica">
+            </div>
+            <h2 class="propuesta-title"><span class="propuesta-number">7.</span> Semana Histológica</h2>
+            <p class="propuesta-desc">Un evento por lapso de una semana con exposiciones, demostraciones en vivo, concursos de fotografía microscópica y charlas abiertas a toda la facultad, posicionando la asignatura como referente académico.</p>
+        </div>
+
+        <!-- Progress Dots -->
+        <div class="progress-dots" id="dots"></div>
+
+    </div>
+</div>
+
+<script>
+(function() {
+    const cards = document.querySelectorAll('.propuesta-card');
+    const counter = document.getElementById('counter');
+    const dotsContainer = document.getElementById('dots');
+    const prevBtn = document.getElementById('prevProp');
+    const nextBtn = document.getElementById('nextProp');
+    const total = cards.length;
+    let current = 0;
+
+    // Build dots
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        dotsContainer.appendChild(dot);
+    }
+    const dots = dotsContainer.querySelectorAll('.dot');
+
+    function showCard(index) {
+        cards.forEach(c => {
+            c.classList.remove('active', 'animate-in');
+        });
+        dots.forEach(d => d.classList.remove('active'));
+
+        cards[index].classList.add('active');
+        // Trigger reflow to restart animation
+        void cards[index].offsetWidth;
+        cards[index].classList.add('animate-in');
+
+        dots[index].classList.add('active');
+        counter.textContent = `${index + 1} / ${total}`;
+
+        prevBtn.classList.toggle('disabled', index === 0);
+        nextBtn.classList.toggle('disabled', index === total - 1);
+    }
+
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (current > 0) {
+            current--;
+            showCard(current);
+        }
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (current < total - 1) {
+            current++;
+            showCard(current);
+        }
+    });
+
+    // Keyboard: Left/Right to navigate proposals internally
+    // Only pass to slide navigation when at the very start (going back) or very end (going forward)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+            if (current < total - 1) {
+                e.stopImmediatePropagation();
+                current++;
+                showCard(current);
+            }
+            // If at last card, let navigation.js handle it (go to next slide)
+        } else if (e.key === 'ArrowLeft') {
+            if (current > 0) {
+                e.stopImmediatePropagation();
+                current--;
+                showCard(current);
+            }
+            // If at first card, let navigation.js handle it (go to prev slide)
+        }
+    }, true); // Use capture phase to intercept before navigation.js
+
+    // Touch swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && current < total - 1) {
+                current++;
+                showCard(current);
+            } else if (diff < 0 && current > 0) {
+                current--;
+                showCard(current);
+            }
+        }
+    }, { passive: true });
+
+})();
+</script>
+
+<script src="navigation.js"></script>
+</body>
+</html>

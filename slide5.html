@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación - La Célula</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .celula-scene {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(26, 58, 95, 0.2);
+            border-radius: 50%;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            from { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 0.5; }
+            to   { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+        }
+
+        /* Header */
+        .page-header {
+            position: absolute;
+            top: 4vh;
+            text-align: center;
+            z-index: 10;
+            opacity: 0;
+            animation: fadeInDown 0.9s ease-out 0.2s forwards;
+        }
+
+        .page-header h1 {
+            font-size: clamp(20px, 4vh, 36px);
+            color: #1a3a5f;
+            font-weight: bold;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+
+        .gold-line {
+            width: 60px;
+            height: 3px;
+            background: #D4AF37;
+            margin: 1vh auto 0;
+            border-radius: 2px;
+        }
+
+        /* === CAROUSEL === */
+        .carousel-wrapper {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 5;
+            padding: 10vh 0 8vh;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 2.5vw;
+            align-items: center;
+            transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Cards */
+        .cell-card {
+            flex-shrink: 0;
+            width: 26vw;
+            height: 58vh;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1),
+                        box-shadow 0.5s ease,
+                        opacity 0.5s ease;
+            opacity: 0.45;
+            transform: scale(0.88);
+        }
+
+        .cell-card.active {
+            opacity: 1;
+            transform: scale(1.05);
+            box-shadow: 0 30px 80px rgba(212, 175, 55, 0.25), 0 0 0 2px rgba(212, 175, 55, 0.5);
+        }
+
+        .cell-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 6s ease;
+        }
+
+        .cell-card.active img {
+            animation: slowZoom 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes slowZoom {
+            from { transform: scale(1); }
+            to   { transform: scale(1.08); }
+        }
+
+        /* Overlay gradient */
+        .card-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 55%, transparent 100%);
+            padding: 3vh 2.5vw;
+            display: flex;
+            flex-direction: column;
+            gap: 1vh;
+        }
+
+        .card-number {
+            font-size: clamp(10px, 1.8vh, 15px);
+            color: #D4AF37;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .card-label {
+            font-size: clamp(14px, 2.8vh, 24px);
+            color: #1a3a5f;
+            font-weight: bold;
+            line-height: 1.15;
+        }
+
+        .card-sublabel {
+            font-size: clamp(11px, 1.8vh, 16px);
+            color: rgba(0,0,0,0.7);
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        /* Navigation dots */
+        .carousel-dots {
+            position: absolute;
+            bottom: 3.5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1.2vh;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 1.2vh;
+            height: 1.2vh;
+            border-radius: 50%;
+            background: rgba(212,175,55,0.3);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .dot.active {
+            background: #D4AF37;
+            transform: scale(1.4);
+        }
+
+        /* Arrow buttons */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(212,175,55,0.12);
+            border: 1px solid rgba(212,175,55,0.3);
+            color: #D4AF37;
+            font-size: 3vh;
+            width: 6vh;
+            height: 6vh;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            user-select: none;
+            font-family: sans-serif;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(212,175,55,0.25);
+            border-color: rgba(212,175,55,0.7);
+        }
+
+        .btn-prev { left: 3vw; }
+        .btn-next { right: 3vw; }
+
+        /* Entrance */
+        .carousel-wrapper {
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.5s forwards;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .nav-hint {
+            position: absolute;
+            bottom: 1.5vh;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0,0,0,0.3);
+            font-size: 11px;
+            letter-spacing: 1px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="animated-bg">
+<div class="celula-scene">
+
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="page-header">
+        <h1>La Célula</h1>
+        <div class="gold-line"></div>
+    </div>
+
+    <!-- Arrow left -->
+    <div class="carousel-btn btn-prev" id="prevCard">&#8592;</div>
+
+    <!-- Carousel -->
+    <div class="carousel-wrapper">
+        <div class="carousel-track" id="carouselTrack">
+
+            <!-- Card 1: La Célula -->
+            <div class="cell-card active" data-index="0">
+                <img src="images/micro_celula.png" alt="La Célula">
+                <div class="card-overlay">
+                    <div class="card-number">01</div>
+                    <div class="card-label">La Célula</div>
+                    <div class="card-sublabel">Unidad estructural y funcional básica de todos los seres vivos</div>
+                </div>
+            </div>
+
+            <!-- Card 2: Células Procariotas y Eucariotas -->
+            <div class="cell-card" data-index="1">
+                <img src="images/micro_procariota_eucariota.png" alt="Células Procariotas y Eucariotas">
+                <div class="card-overlay">
+                    <div class="card-number">02</div>
+                    <div class="card-label">Procariotas y Eucariotas</div>
+                    <div class="card-sublabel">Dos grandes tipos celulares diferenciados por la presencia o ausencia de núcleo definido</div>
+                </div>
+            </div>
+
+            <!-- Card 3: Membrana Celular -->
+            <div class="cell-card" data-index="2">
+                <img src="images/micro_membrana.png" alt="Membrana Celular">
+                <div class="card-overlay">
+                    <div class="card-number">03</div>
+                    <div class="card-label">Membrana Celular</div>
+                    <div class="card-sublabel">Barrera selectiva que regula el paso de sustancias y protege la célula</div>
+                </div>
+            </div>
+
+            <!-- Card 4: Citoplasma -->
+            <div class="cell-card" data-index="3">
+                <img src="images/micro_citoplasma.png" alt="Citoplasma">
+                <div class="card-overlay">
+                    <div class="card-number">04</div>
+                    <div class="card-label">Citoplasma</div>
+                    <div class="card-sublabel">Medio interno donde ocurren las reacciones metabólicas y se alojan los organelos</div>
+                </div>
+            </div>
+
+            <!-- Card 5: Núcleo -->
+            <div class="cell-card" data-index="4">
+                <img src="images/micro_nucleo.png" alt="Núcleo">
+                <div class="card-overlay">
+                    <div class="card-number">05</div>
+                    <div class="card-label">Núcleo</div>
+                    <div class="card-sublabel">Centro de control celular que almacena el material genético y dirige la actividad celular</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Arrow right -->
+    <div class="carousel-btn btn-next" id="nextCard">&#8594;</div>
+
+    <!-- Dots -->
+    <div class="carousel-dots" id="carouselDots"></div>
+
+    <div class="nav-hint">Flechas del teclado para cambiar de diapositiva</div>
+</div>
+
+<script>
+(function() {
+    // --- Particles ---
+    const pContainer = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.animationDuration = (8 + Math.random() * 14) + 's';
+        p.style.animationDelay = (-Math.random() * 15) + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+        p.style.opacity = (0.2 + Math.random() * 0.5).toString();
+        pContainer.appendChild(p);
+    }
+
+    // --- Carousel ---
+    const cards = document.querySelectorAll('.cell-card');
+    const track = document.getElementById('carouselTrack');
+    const dotsContainer = document.getElementById('carouselDots');
+    const prevBtn = document.getElementById('prevCard');
+    const nextBtn = document.getElementById('nextCard');
+    let current = 0;
+    const total = cards.length;
+
+    // Build dots
+    for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+    }
+    const dots = dotsContainer.querySelectorAll('.dot');
+
+    function goTo(index) {
+        cards[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (index + total) % total;
+        cards[current].classList.add('active');
+        dots[current].classList.add('active');
+
+        // Center the active card
+        const cardW = cards[0].offsetWidth;
+        const gap = parseFloat(getComputedStyle(track).gap) || 40;
+        const trackCenter = track.parentElement.offsetWidth / 2;
+        const offset = current * (cardW + gap) - trackCenter + cardW / 2;
+        track.style.transform = `translateX(${-offset}px)`;
+    }
+
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(current - 1); });
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); goTo(current + 1); });
+
+    // Internal keyboard navigation: left/right cycle cards before going to other slide
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+            if (current < total - 1) {
+                e.stopImmediatePropagation();
+                goTo(current + 1);
+            }
+        } else if (e.key === 'ArrowLeft') {
+            if (current > 0) {
+                e.stopImmediatePropagation();
+                goTo(current - 1);
+            }
+        }
+    }, true);
+
+    // Touch swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].screenX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0 && current < total - 1) goTo(current + 1);
+            else if (diff < 0 && current > 0) goTo(current - 1);
+        }
+    }, { passive: true });
+
+    // Init position
+    goTo(0);
+    setTimeout(() => goTo(0), 100);
+})();
+</script>
+
+<script src="navigation.js"></script>
+</body>
+</html>

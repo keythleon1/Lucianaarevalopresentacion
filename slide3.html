@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación - Metodología</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Slide-specific styles */
+        .method-scene {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* The SVG canvas that holds ring + arrows */
+        #orbit-svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: visible;
+            animation: rotateSVG 25s linear infinite;
+            transform-origin: 50% 50%;
+            opacity: 0.6;
+        }
+
+        @keyframes rotateSVG {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* Central title – positioned by JS */
+        #central-title {
+            position: absolute;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: clamp(20px, 4.5vh, 38px);
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 4vh 6vh;
+            border-radius: 24px;
+            box-shadow: 
+                0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                0 8px 10px -6px rgba(0, 0, 0, 0.1),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            max-width: 65vw;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            z-index: 20;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Orbit items – positioned by JS */
+        .orbit-node {
+            position: absolute;
+            width: 24vh;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(12px, 2.2vh, 22px);
+            font-weight: 700;
+            color: #1e293b;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 2.5vh;
+            border-radius: 16px;
+            box-shadow: 
+                0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1.5px solid #D4AF37;
+            z-index: 20;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-10px); }
+        }
+
+        /* Entrance */
+        .method-scene {
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out forwards;
+        }
+        @keyframes fadeIn { to { opacity: 1; } }
+    </style>
+</head>
+<body class="animated-bg">
+<div class="slide" style="padding:0; max-width:100vw;">
+    <div class="method-scene" id="scene">
+
+        <!-- Rotating SVG (ring + arrowhead markers) -->
+        <svg id="orbit-svg" viewBox="0 0 1 1" preserveAspectRatio="none">
+            <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10"
+                        refX="8" refY="5" orient="auto">
+                    <path d="M0,0 L10,5 L0,10 L2,5 Z" fill="#D4AF37"/>
+                </marker>
+            </defs>
+            <!-- The circle ring – radius and position set by JS -->
+            <circle id="orbit-ring" fill="none"
+                    stroke="#D4AF37" stroke-width="2"
+                    stroke-dasharray="10,10"
+                    marker-end="url(#arrow)"
+                    marker-start="url(#arrow)"/>
+        </svg>
+
+        <!-- Central Title -->
+        <div id="central-title">HISTOLOGÍA,<br>EMBRIOLOGÍA Y GENÉTICA.</div>
+
+        <!-- Orbit Nodes -->
+        <div class="orbit-node" id="node-0">1. EJE METODOLÓGICO</div>
+        <div class="orbit-node" id="node-1">2. COMPONENTES DE LA ENSEÑANZA</div>
+        <div class="orbit-node" id="node-2">3. PROPÓSITO ACADÉMICO</div>
+
+        <div class="nav-hint" style="color:#888; position:absolute; bottom:3vh; left:50%; transform:translateX(-50%); z-index:30;">
+            Flecha Izquierda para volver
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const scene = document.getElementById('scene');
+
+    function layout() {
+        const W = scene.offsetWidth;
+        const H = scene.offsetHeight;
+        const cx = W / 2;
+        const cy = H / 2;
+
+        // Circular Radius: Balanced for 3 points
+        const R = Math.min(W, H) * 0.42;
+
+        // ── SVG ring (Circle) ──────────────────────────────────────────
+        const svg = document.getElementById('orbit-svg');
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+        svg.setAttribute('width',  W);
+        svg.setAttribute('height', H);
+        svg.style.transformOrigin = `${cx}px ${cy}px`;
+
+        const ring = document.getElementById('orbit-ring');
+        ring.setAttribute('cx', cx);
+        ring.setAttribute('cy', cy);
+        ring.setAttribute('r', R);
+
+        // Adjust dash for circular circumference
+        const circ = 2 * Math.PI * R;
+        const dashLen = circ / 3 - 20; // 3 segments for 3 items
+        ring.setAttribute('stroke-dasharray', `${dashLen} 20`);
+
+        // ── Orbit nodes (placed at 120° intervals for 3 items) ──
+        const nodes = document.querySelectorAll('.orbit-node');
+        const startAngle = -90; // degrees (top)
+        nodes.forEach((node, i) => {
+            const angleDeg = startAngle + i * 120;
+            const angleRad = angleDeg * Math.PI / 180;
+            const nx = cx + R * Math.cos(angleRad);
+            const ny = cy + R * Math.sin(angleRad);
+            node.style.left = nx + 'px';
+            node.style.top  = ny + 'px';
+            node.style.transform = 'translate(-50%, -50%)';
+        });
+    }
+
+    layout();
+    window.addEventListener('resize', layout);
+})();
+</script>
+
+<script src="navigation.js"></script>
+</body>
+</html>
