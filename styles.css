@@ -116,6 +116,12 @@ h1 {
     font-weight: bold;
 }
 
+.footer-date {
+    margin-top: 4vh; /* Espacio extra respecto al nombre */
+    font-size: 2.8vh;
+    opacity: 0.8;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -208,7 +214,7 @@ body.animated-bg {
 }
 
 .editorial-name {
-    font-size: 8vh; /* Increased from 6vh */
+    font-size: 6.5vh; /* Balanced size */
     font-style: italic;
     font-weight: bold;
     color: #1a3a5f;
@@ -228,8 +234,8 @@ body.animated-bg {
 }
 
 .editorial-list li {
-    font-size: 3.5vh; /* Increased from 2.8vh */
-    margin-bottom: 3vh;
+    font-size: 2.8vh; /* Balanced size */
+    margin-bottom: 1.6vh; /* Balanced spacing */
     line-height: 1.3;
     color: #444;
     opacity: 0;
@@ -258,6 +264,9 @@ body.animated-bg {
 .delay-5 { animation-delay: 1.8s; }
 .delay-6 { animation-delay: 2.1s; }
 .delay-7 { animation-delay: 2.4s; }
+.delay-8 { animation-delay: 2.7s; }
+.delay-9 { animation-delay: 3.0s; }
+.delay-10 { animation-delay: 3.3s; }
 
 /* Methodology Circle Styles */
 .methodology-wrapper {
